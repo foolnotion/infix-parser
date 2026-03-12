@@ -1,6 +1,8 @@
 # infix-parser
 
-[![CI](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml/badge.svg)](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml)
+[![Linux](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml/badge.svg?job=test-linux)](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml)
+[![macOS](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml/badge.svg?job=test-macos)](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml)
+[![Windows](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml/badge.svg?job=test-windows)](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A fast C++20 infix expression parser built on [lexy](https://github.com/foonathan/lexy).

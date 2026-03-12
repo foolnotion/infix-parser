@@ -4,7 +4,7 @@
   "dependencies": [
     {
       "name": "fast-float",
-      "version>=": "8.2.3"
+      "version>=": "8.2.4"
     },
     {
       "name": "fmt",
@@ -31,5 +31,5 @@
       ]
     }
   },
-  "builtin-baseline": "d7112d1a4fb50410d3639f5f586972591d848beb"
+  "builtin-baseline": "efa4634bd526b87559684607d2cbbdeeec0f07d8"
 }

@@ -3,14 +3,14 @@ name: Continuous Integration
 on:
   push:
     branches:
-    - master
+    - main
 
   pull_request:
     branches:
-    - master
+    - main
 
 env:
-  VCPKG_COMMIT: "d7112d1a4fb50410d3639f5f586972591d848beb"
+  VCPKG_COMMIT: "efa4634bd526b87559684607d2cbbdeeec0f07d8"
 
 jobs:
   lint:
@@ -25,8 +25,17 @@ jobs:
     - name: Install codespell
       run: pip3 install codespell
 
+    - name: Install clang-format-21
+      run: |
+        wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key \
+          | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
+        echo "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-21 main" \
+          | sudo tee /etc/apt/sources.list.d/llvm.list
+        sudo apt-get update -q
+        sudo apt-get install clang-format-21 -y -q
+
     - name: Lint
-      run: cmake -D FORMAT_COMMAND=clang-format-18 -P cmake/lint.cmake
+      run: cmake -D FORMAT_COMMAND=clang-format-21 -P cmake/lint.cmake
 
     - name: Spell check
       if: always()
@@ -107,26 +116,22 @@ jobs:
           halt_on_error=1"
       run: ctest --output-on-failure --no-tests=error -j 2
 
-  test:
+  test-linux:
     needs: [lint]
+
+    runs-on: ubuntu-24.04
 
     strategy:
       matrix:
-        os: [macos-14, ubuntu-24.04, windows-2022]
-
         type: [shared, static]
-
         include:
         - { type: shared, shared: YES }
         - { type: static, shared: NO }
-
-    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Install static analyzers
-      if: matrix.os == 'ubuntu-24.04'
       run: >-
         sudo apt-get install clang-tidy-18 cppcheck -y -q
 
@@ -138,19 +143,80 @@ jobs:
       uses: friendlyanon/setup-vcpkg@v1
       with: { committish: "${{ env.VCPKG_COMMIT }}" }
 
+    - name: Configure
+      run: cmake --preset=ci-ubuntu -D BUILD_SHARED_LIBS=${{ matrix.shared }}
+
+    - name: Build
+      run: cmake --build build -j 2
+
+    - name: Install
+      run: cmake --install build --prefix prefix
+
+    - name: Test
+      working-directory: build
+      run: ctest --output-on-failure --no-tests=error -j 2
+
+  test-macos:
+    needs: [lint]
+
+    runs-on: macos-14
+
+    strategy:
+      matrix:
+        type: [shared, static]
+        include:
+        - { type: shared, shared: YES }
+        - { type: static, shared: NO }
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install vcpkg
+      uses: friendlyanon/setup-vcpkg@v1
+      with: { committish: "${{ env.VCPKG_COMMIT }}" }
+
+    - name: Configure
+      run: cmake --preset=ci-macos -D BUILD_SHARED_LIBS=${{ matrix.shared }}
+
+    - name: Build
+      run: cmake --build build --config Release -j 3
+
+    - name: Install
+      run: cmake --install build --config Release --prefix prefix
+
+    - name: Test
+      working-directory: build
+      run: ctest --output-on-failure --no-tests=error -C Release -j 3
+
+  test-windows:
+    needs: [lint]
+
+    runs-on: windows-2022
+
+    strategy:
+      matrix:
+        type: [shared, static]
+        include:
+        - { type: shared, shared: YES }
+        - { type: static, shared: NO }
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install vcpkg
+      uses: friendlyanon/setup-vcpkg@v1
+      with: { committish: "${{ env.VCPKG_COMMIT }}" }
+
     - name: Setup MultiToolTask
-      if: matrix.os == 'windows-2022'
       run: |
         Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
         Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
 
     - name: Configure
-      shell: pwsh
-      run: cmake "--preset=ci-$("${{ matrix.os }}".split("-")[0])"
-        -D BUILD_SHARED_LIBS=${{ matrix.shared }}
+      run: cmake --preset=ci-windows -D BUILD_SHARED_LIBS=${{ matrix.shared }}
 
     - name: Setup PATH
-      if: matrix.os == 'windows-2022' && matrix.type == 'shared'
+      if: matrix.type == 'shared'
       run: Add-Content "$env:GITHUB_PATH" "$(Get-Location)\build\Release"
 
     - name: Build
@@ -165,7 +231,7 @@ jobs:
 
   docs:
     # Deploy docs only when builds succeed
-    needs: [sanitize, test]
+    needs: [sanitize, test-linux, test-macos, test-windows]
 
     runs-on: ubuntu-24.04
 
@@ -180,9 +246,9 @@ jobs:
     # this comment and the last line in the conditional below.
     # If you do not wish to use GitHub Pages for deploying documentation, then
     # simply delete this job similarly to the coverage one.
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
       && github.event_name == 'push'
-      && github.repository_owner == '<name>'
+      && github.repository_owner == 'foolnotion'
       && false
 
     permissions:
