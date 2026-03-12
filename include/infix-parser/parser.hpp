@@ -9,6 +9,7 @@
 #include <variant>
 
 #include "ast.hpp"
+#include "infix-parser/infix-parser_export.hpp"
 
 namespace infix_parser
 {
@@ -22,7 +23,8 @@ struct parse_error
 // Parse an infix expression string into a postfix (reverse-prefix) node list.
 // Children appear before their parent; for binary ops the right child precedes
 // the left.
-auto parse(std::string_view infix) -> std::variant<expression, parse_error>;
+INFIX_PARSER_EXPORT auto parse(std::string_view infix)
+    -> std::variant<expression, parse_error>;
 
 }  // namespace infix_parser
 
