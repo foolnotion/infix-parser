@@ -1,0 +1,35 @@
+{
+  "name": "infix-parser",
+  "version-semver": "0.1.0",
+  "dependencies": [
+    {
+      "name": "fast-float",
+      "version>=": "8.2.3"
+    },
+    {
+      "name": "fmt",
+      "version>=": "12.1.0"
+    },
+    {
+      "name": "foonathan-lexy",
+      "version>=": "2025.5.0"
+    }
+  ],
+  "default-features": [],
+  "features": {
+    "test": {
+      "description": "Dependencies for testing and benchmarking",
+      "dependencies": [
+        {
+          "name": "catch2",
+          "version>=": "3.7.1"
+        },
+        {
+          "name": "nanobench",
+          "version>=": "4.3.11"
+        }
+      ]
+    }
+  },
+  "builtin-baseline": "d7112d1a4fb50410d3639f5f586972591d848beb"
+}
