@@ -1,9 +1,9 @@
 # infix-parser
 
-[![Linux](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml/badge.svg?job=test-linux)](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml)
-[![macOS](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml/badge.svg?job=test-macos)](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml)
-[![Windows](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml/badge.svg?job=test-windows)](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Linux](https://img.shields.io/github/actions/workflow/status/foolnotion/infix-parser/ci.yml?job=test-linux&label=linux)](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml)
+[![macOS](https://img.shields.io/github/actions/workflow/status/foolnotion/infix-parser/ci.yml?job=test-macos&label=macos)](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml)
+[![Windows](https://img.shields.io/github/actions/workflow/status/foolnotion/infix-parser/ci.yml?job=test-windows&label=windows)](https://github.com/foolnotion/infix-parser/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A fast C++20 infix expression parser built on [lexy](https://github.com/foonathan/lexy).
 Parses mathematical expressions into a compact reverse-prefix AST suitable for
@@ -158,4 +158,4 @@ grammar straightforward and type-safe.
 ## License
 
 MIT — see [LICENSE](LICENSE).
-Copyright © 2026 Bogdan Burlacu \<bogdan.burlacu@pm.me\>
+Copyright © 2026 Bogdan Burlacu
